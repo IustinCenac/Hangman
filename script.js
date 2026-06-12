@@ -38,7 +38,7 @@ function showWord() {
     guessedWord.innerHTML = foundLetters.join(" ");
 }
 
-let livesCounter = 3;
+let livesCounter = 7;
 function showLives() {
     lives.innerHTML = livesCounter;
 }
@@ -48,25 +48,23 @@ showLives();
 
 let usedLetterArray = [];
 let wrongLettersArray = [];
+let messageMarker = 0;
 
 function checkLetter() {
     const libraryText = libraryInput.value.toLowerCase();
     
     if (libraryText == "") {
-        displayMessage.style.color = "red";
-        displayMessage.innerHTML = "You must enter a letter!";
+        messageMarker = 0;
     } else if (usedLetterArray.includes(libraryText)) {
-        displayMessage.style.color = "orange";
-        displayMessage.innerHTML = "Letter used already!";
+        messageMarker = 1;
 
         libraryInput.value = "";
     } else if (randomLibraryWord.includes(libraryText)) {
         for (let i = 0; i < randomLibraryWordLength; ++i) {
             if (randomLibraryWord[i] === libraryText) {
                 foundLetters[i] = libraryText;
-
-                displayMessage.style.color = "green";
-                displayMessage.innerHTML = "You guessed right!";
+                
+                messageMarker = 2;
             }
         }
         usedLetterArray.push(libraryText);
@@ -75,15 +73,13 @@ function checkLetter() {
         libraryInput.value = "";
         
         if (foundLetters.includes("_") == false) {
-            displayMessage.style.color = "green";
-            displayMessage.innerHTML = "You win!";
+            messageMarker = 3;
 
             gameOver = 1;
             submitButton.textContent = "New Game";
         }
     } else {
-        displayMessage.style.color = "red";
-        displayMessage.innerHTML = "Try again!";
+        messageMarker = 4;
 
         --livesCounter;
 
@@ -94,21 +90,20 @@ function checkLetter() {
         showLives();
         
         if (livesCounter == 0) {
-            displayMessage.style.color = "red";
-            displayMessage.innerHTML = "Game over!";
+            messageMarker = 5;
             
             gameOver = 1;
             submitButton.textContent = "New Game";
         }
     }
+    allMessages ();
 }
 
 function newGame() {
-    //plec de la/si afisez tot resetat
     randomLibraryWord = library[Math.floor(Math.random() * n)];
     randomLibraryWordLength = randomLibraryWord.length;
 
-    livesCounter = 3;
+    livesCounter = 7;
     gameOver = 0;
 
     usedLetterArray = [];
@@ -123,4 +118,26 @@ function newGame() {
     showLives();
 
     submitButton.textContent = "Submit";
+}
+
+function allMessages () {
+    if (messageMarker == 0) {
+        displayMessage.style.color = "red";
+        displayMessage.innerHTML = "You must enter a letter!";
+    } else if (messageMarker == 1) {
+        displayMessage.style.color = "orange";
+        displayMessage.innerHTML = "Letter used already!";
+    } else if (messageMarker == 2) {
+         displayMessage.style.color = "green";
+        displayMessage.innerHTML = "You guessed right!";
+    } else if (messageMarker == 3) {
+        displayMessage.style.color = "green";
+        displayMessage.innerHTML = "You win!";
+    } else if (messageMarker == 4) {
+        displayMessage.style.color = "red";
+        displayMessage.innerHTML = "Try again!";
+    } else {
+        displayMessage.style.color = "red";
+        displayMessage.innerHTML = "Game over!";
+    }
 }
